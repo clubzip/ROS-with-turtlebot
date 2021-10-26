@@ -14,13 +14,10 @@ int count;
 
 void msgCallback(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
 {
-//	std::cout<<"Bouding Boxes (header):" << msg->header <<std::endl;
-//    darknet_ros_msgs::BoundingBoxes boxes = msg->bounding_boxes;    
-
-    //for(auto iter = begin(msg->bounding_boxes); iter != end(msg->bounding_boxes); iter++)
-
-   ROS_INFO("call back"); 
-        if(msg->bounding_boxes[0].Class == "bottle")
+    ROS_INFO("call back");
+    for(int i =0; i < sizeof(msg->bounding_boxes)/sizeof(msg->bounding_boxes[0]); i++)
+    {
+        if(msg->bounding_boxes[i].Class == "bottle")
         {
 		count = 0;
 		ROS_INFO("found bottle");
@@ -47,6 +44,7 @@ void msgCallback(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
                 return;
             }
         }
+    }
 }
 
 int main(int argc, char** argv)
@@ -66,7 +64,6 @@ int main(int argc, char** argv)
     ros::Subscriber yolo_bounding_box = nh.subscribe("/darknet_ros/bounding_boxes", 100, msgCallback);
 
 
-//    for(int i = 0; i<
    while(ros::ok())
     {
 	count++;
